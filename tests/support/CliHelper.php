@@ -13,14 +13,26 @@ class CliHelper extends \Codeception\Module
 
     public function _before(\Codeception\TestInterface $test)
     {
-        codecept_debug('creating dirs');
-        $this->getModule('Filesystem')->copyDir(codecept_data_dir() . 'claypit', codecept_data_dir() . 'sandbox');
+        $groups = $test->getMetadata()->getGroups();
+        if (in_array('reports', $groups)) {
+            codecept_debug('clean output dir');
+            $this->getModule('Filesystem')->cleanDir('tests/data/cli-tests/tests/_output/');
+            $this->getModule('Filesystem')->cleanDir('tests/data/claypit/tests/_output/');
+        }
+        if (in_array('sandbox', $groups)) {
+            codecept_debug('creating dirs');
+            $this->getModule('Filesystem')->copyDir(codecept_data_dir() . 'claypit', codecept_data_dir() . 'sandbox');
+            $this->getModule('Filesystem')->amInPath('tests/data/sandbox');
+        }
     }
 
     public function _after(\Codeception\TestInterface $test)
     {
-        codecept_debug('deleting dirs');
-        $this->getModule('Filesystem')->deleteDir(codecept_data_dir() . 'sandbox');
+        $groups = $test->getMetadata()->getGroups();
+        if (in_array('sandbox', $groups)) {
+            codecept_debug('deleting dirs');
+            $this->getModule('Filesystem')->deleteDir(codecept_data_dir() . 'sandbox');
+        }
         chdir(\Codeception\Configuration::projectDir());
     }
 

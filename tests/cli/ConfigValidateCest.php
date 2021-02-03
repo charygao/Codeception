@@ -4,7 +4,7 @@ class ConfigValidateCest
 {
     public function _before(CliGuy $I)
     {
-        $I->amInPath('tests/data/sandbox');
+        $I->amInPath('tests/data/claypit');
     }
 
     public function printsValidConfig(CliGuy $I)

@@ -14,6 +14,9 @@ class MathCest
         $this->calc = $calc;
     }
 
+    /**
+     * @group ok
+     */
     public function testAddition(MathTester $I)
     {
         $I->assertEquals(3, $this->calc->add(1, 2));

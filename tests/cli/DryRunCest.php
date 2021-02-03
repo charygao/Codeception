@@ -3,7 +3,7 @@ class DryRunCest
 {
     public function _before(CliGuy $I)
     {
-        $I->amInPath('tests/data/sandbox');
+        $I->amInPath('tests/data/claypit');
     }
 
     public function runCestWithExamples(CliGuy $I)

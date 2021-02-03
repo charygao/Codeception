@@ -2,20 +2,23 @@
 
 class ExtensionsCest
 {
+    public function _before(CliGuy $I)
+    {
+        $I->amInPath('tests/data/claypit');
+    }
+
     // tests
     public function useAlternativeFormatter(CliGuy $I)
     {
         $I->wantTo('use alternative formatter delivered through extensions');
-        $I->amInPath('tests/data/sandbox');
         $I->executeCommand('run tests/dummy/FileExistsCept.php -c codeception_extended.yml');
         $I->dontSeeInShellOutput("Check config");
         $I->seeInShellOutput('[+] FileExistsCept');
-        $I->seeInShellOutput('Modules used: Filesystem, DumbHelper');
+        $I->seeInShellOutput('Modules used: Filesystem');
     }
 
     public function loadExtensionByOverride(CliGuy $I)
     {
-        $I->amInPath('tests/data/sandbox');
         $I->executeCommand('run tests/dummy/FileExistsCept.php -o "extensions: enabled: [\Codeception\Extension\SimpleReporter]"');
         $I->dontSeeInShellOutput("Check config");
         $I->seeInShellOutput('[+] FileExistsCept');
@@ -23,7 +26,6 @@ class ExtensionsCest
 
     public function dynamicallyEnablingExtensions(CliGuy $I)
     {
-        $I->amInPath('tests/data/sandbox');
         $I->executeCommand('run dummy --ext DotReporter');
         $I->seeInShellOutput('......');
         $I->dontSeeInShellOutput('Optimistic');
@@ -33,7 +35,7 @@ class ExtensionsCest
     public function reRunFailedTests(CliGuy $I)
     {
         $ds = DIRECTORY_SEPARATOR;
-        $I->amInPath('tests/data/sandbox');
+        $I->amInPath(codecept_data_dir('cli-tests'));
 
         $I->executeCommand('run unit FailingTest.php -c codeception_extended.yml --no-exit');
         $I->seeInShellOutput('FAILURES');
@@ -54,7 +56,6 @@ class ExtensionsCest
     public function checkIfExtensionsReceiveCorrectOptions(CliGuy $I)
     {
         $I->wantTo('check if extensions receive correct options');
-        $I->amInPath('tests/data/sandbox');
         $I->executeCommand('run tests/dummy/AnotherCest.php:optimistic -c codeception_extended.yml');
         $I->seeInShellOutput('Low verbosity');
         $I->executeCommand('run tests/dummy/AnotherCest.php:optimistic -c codeception_extended.yml -v');
@@ -67,7 +68,6 @@ class ExtensionsCest
 
     public function runPerSuiteExtensions(CliGuy $I)
     {
-        $I->amInPath('tests/data/sandbox');
         $I->executeCommand('run extended,scenario', false);
         $I->seeInShellOutput('Suite setup for extended');
         $I->seeInShellOutput('Test setup for Hello');
@@ -80,13 +80,10 @@ class ExtensionsCest
 
     public function runPerSuiteExtensionsInEnvironment(CliGuy $I)
     {
-        $I->amInPath('tests/data/sandbox');
         $I->executeCommand('run extended --env black', false);
         $I->seeInShellOutput('Suite setup for extended');
         $I->seeInShellOutput('Test setup for Hello');
         $I->seeInShellOutput('Config1: black_value');
         $I->seeInShellOutput('Config2: value2');
     }
-
-
 }

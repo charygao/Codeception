@@ -61,7 +61,8 @@
         "classmap": [
             "tests/cli/_steps",
             "tests/data/DummyClass.php",
-            "tests/data/claypit/tests/_data"
+            "tests/data/claypit/tests/_data",
+            "tests/data/cli-tests/tests/_data"
         ]
     },
     "extra": {

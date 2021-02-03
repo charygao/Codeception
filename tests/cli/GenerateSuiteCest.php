@@ -1,9 +1,12 @@
 <?php
+/**
+ * @group sandbox
+ */
+
 class GenerateSuiteCest
 {
     public function generateSimpleSuite(CliGuy $I)
     {
-        $I->amInPath('tests/data/sandbox');
         $I->executeCommand('generate:suite house HouseGuy');
         $I->seeFileFound('house.suite.yml', 'tests');
         $I->expect('actor class is generated');
@@ -21,7 +24,6 @@ class GenerateSuiteCest
 
     public function generateSuiteWithCustomConfig(CliGuy $I)
     {
-        $I->amInPath('tests/data/sandbox');
         $I->executeCommand('bootstrap --empty src/FooBar --namespace FooBar');
         $I->executeCommand('generate:suite house HouseGuy -c src/FooBar');
         $I->seeDirFound('src/FooBar/tests/house');

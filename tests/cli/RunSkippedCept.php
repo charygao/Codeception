@@ -1,7 +1,7 @@
 <?php
 $I = new CliGuy($scenario);
 $I->wantTo('run skipped test');
-$I->amInPath('tests/data/sandbox');
+$I->amInPath('tests/data/cli-tests');
 $I->executeCommand('run skipped SkipMeCept.php');
 $I->seeInShellOutput("S SkipMeCept: Skip it");
 $I->seeInShellOutput('OK, but incomplete, skipped, or risky tests!');

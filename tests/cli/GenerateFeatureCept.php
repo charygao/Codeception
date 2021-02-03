@@ -1,7 +1,10 @@
 <?php
+/**
+ * @group sandbox
+ */
+
 $I = new CliGuy($scenario);
 $I->wantTo('generate gherkin steps');
-$I->amInPath('tests/data/sandbox');
 $I->executeCommand('generate:feature scenario Login');
 $I->seeInShellOutput('Feature was created');
 $I->seeFileFound('Login.feature', 'tests/scenario');

@@ -1,7 +1,7 @@
 class_name: DumbGuy
 path: dummy
 modules:
-    enabled: [Filesystem, DumbHelper]
+    enabled: [Filesystem]
 env:
     dev: []
 bootstrap: "../_init.php"

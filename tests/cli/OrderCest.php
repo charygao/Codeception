@@ -2,9 +2,19 @@
 
 class OrderCest
 {
+    public function _before(CliGuy $I)
+    {
+        $I->amInPath('tests/data/cli-tests');
+        $I->cleanDir(codecept_output_dir());
+    }
+
+    public function _after(CliGuy $I)
+    {
+        $I->amInPath(codecept_root_dir());
+    }
+
     public function checkOneFile(CliGuy $I)
     {
-        $I->amInPath('tests/data/sandbox');
         $I->executeCommand('run order LoadingOrderCept.php');
         $I->expect('global bootstrap, initialization, beforeSuite, before, bootstrap(B), test(T), after, afterSuite');
         $I->seeFileFound('order.txt', 'tests/_output');
@@ -13,7 +23,6 @@ class OrderCest
 
     public function checkForFails(CliGuy $I)
     {
-        $I->amInPath('tests/data/sandbox');
         $I->executeCommand('run order FailedCept.php --no-exit');
         $I->seeFileFound('order.txt', 'tests/_output');
         $I->expect('global bootstrap, initialization, beforeSuite, before, bootstrap, test, fail, after, afterSuite');
@@ -22,7 +31,6 @@ class OrderCest
 
     public function checkForCanCantFails(CliGuy $I)
     {
-        $I->amInPath('tests/data/sandbox');
         $I->executeCommand('run order CanCantFailCept.php --no-exit');
         $I->seeFileFound('order.txt', 'tests/_output');
         $I->expect(
@@ -34,7 +42,6 @@ class OrderCest
 
     public function checkForCanCantFailsInCest(CliGuy $I)
     {
-        $I->amInPath('tests/data/sandbox');
         $I->executeCommand('run order CanCantFailCest.php --no-exit');
         $I->seeFileFound('order.txt', 'tests/_output');
         $I->expect(
@@ -46,7 +53,6 @@ class OrderCest
 
     public function checkSimpleFiles(CliGuy $I)
     {
-        $I->amInPath('tests/data/sandbox');
         $I->executeCommand('run order --no-exit --group simple');
         $I->seeFileFound('order.txt', 'tests/_output');
         $I->seeFileContentsEqual("BIBP({{{{[ST][STFFT][STF][ST]}}}})");
@@ -54,7 +60,6 @@ class OrderCest
 
     public function checkCestOrder(CliGuy $I)
     {
-        $I->amInPath('tests/data/sandbox');
         $I->executeCommand('run tests/order/ReorderCest.php --no-exit');
         $I->seeFileFound('order.txt', 'tests/_output');
         $I->seeFileContentsEqual("BIB([0123456])");
@@ -62,7 +67,6 @@ class OrderCest
 
     public function checkFailingCestOrder(CliGuy $I)
     {
-        $I->amInPath('tests/data/sandbox');
         $I->executeCommand('run tests/order/FailedCest.php --no-exit -vvv');
         $I->seeFileFound('order.txt', 'tests/_output');
         $I->seeFileContentsEqual("BIB([a%F])");
@@ -70,7 +74,6 @@ class OrderCest
 
     public function checkCodeceptionTest(CliGuy $I)
     {
-        $I->amInPath('tests/data/sandbox');
         $I->executeCommand('run order CodeTest.php --no-exit');
         $I->seeFileFound('order.txt', 'tests/_output');
         $I->expect('
@@ -93,7 +96,6 @@ class OrderCest
 
     public function checkAfterBeforeClassInTests(CliGuy $I)
     {
-        $I->amInPath('tests/data/sandbox');
         $I->executeCommand('run order BeforeAfterClassTest.php');
         $I->seeFileFound('order.txt', 'tests/_output');
         $I->seeInThisFile('BIB({[1][2]})');
@@ -101,7 +103,6 @@ class OrderCest
 
     public function checkAfterBeforeClassInTestWithDataProvider(CliGuy $I)
     {
-        $I->amInPath('tests/data/sandbox');
         $I->executeCommand('run order BeforeAfterClassWithDataProviderTest.php');
         $I->seeFileFound('order.txt', 'tests/_output');
         $I->seeInThisFile('BIB({[A][B][C]})');
@@ -109,7 +110,6 @@ class OrderCest
 
     public function checkBootstrapIsLoadedBeforeTests(CliGuy $I)
     {
-        $I->amInPath('tests/data/sandbox');
         $I->executeCommand('run order ParsedLoadedTest.php');
         $I->seeFileFound('order.txt', 'tests/_output');
         $I->seeInThisFile('BIBP(T)');

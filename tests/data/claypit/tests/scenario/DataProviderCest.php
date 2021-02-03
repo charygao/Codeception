@@ -29,7 +29,7 @@ class DataProviderCest
       /**
        * @group dataprovider
        * @dataProvider __exampleDataSource
-       * @example(path=".", file="skipped.suite.yml")
+       * @example(path=".", file="dummy.suite.yml")
        */
        public function withDataProviderAndExample(ScenarioGuy $I, Example $example)
        {
@@ -72,7 +72,7 @@ class DataProviderCest
           return[
               ['path' => ".", 'file' => "scenario.suite.yml"],
               ['path' => ".",  'file' => "dummy.suite.yml"],
-              ['path' => ".",  'file' => "unit.suite.yml"]
+              ['path' => ".",  'file' => "remote.suite.yml"]
           ];
       }
 
@@ -84,7 +84,7 @@ class DataProviderCest
           return[
               ['path' => ".", 'file' => "scenario.suite.yml"],
               ['path' => ".",  'file' => "dummy.suite.yml"],
-              ['path' => ".",  'file' => "unit.suite.yml"]
+              ['path' => ".",  'file' => "remote.suite.yml"]
           ];
       }
 }

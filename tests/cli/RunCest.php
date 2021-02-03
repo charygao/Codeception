@@ -4,21 +4,17 @@ use Codeception\Scenario;
 
 class RunCest
 {
-    public function _before(\CliGuy $I)
-    {
-        $I->amInPath('tests/data/sandbox');
-    }
 
     public function runOneFile(\CliGuy $I)
     {
-        $I->wantTo('execute one test');
+        $I->amInPath('tests/data/claypit');
         $I->executeCommand('run tests/dummy/FileExistsCept.php');
         $I->seeInShellOutput("OK (");
     }
 
     public function runOneFileWithColors(\CliGuy $I)
     {
-        $I->wantTo('execute one test');
+        $I->amInPath('tests/data/claypit');
         $I->executeCommand('run --colors tests/dummy/FileExistsCept.php');
         $I->seeInShellOutput("OK (");
         $I->seeInShellOutput("\033[35;1mFileExistsCept:\033[39;22m Check config exists");
@@ -67,8 +63,8 @@ class RunCest
     public function runHtml(\CliGuy $I)
     {
         $I->wantTo('execute tests with html output');
-        $I->executeCommand('run dummy --html');
-        $I->seeFileFound('report.html', 'tests/_output');
+        $I->executeCommand('run -c tests/data/claypit/ dummy --html');
+        $I->seeFileFound('report.html', 'tests/data/claypit/tests/_output');
     }
 
     /**
@@ -79,11 +75,11 @@ class RunCest
     public function runJsonReport(\CliGuy $I)
     {
         $I->wantTo('check json reports');
-        $I->executeCommand('run dummy --json');
-        $I->seeFileFound('report.json', 'tests/_output');
+        $I->executeCommand('run -c tests/data/claypit/ dummy --json');
+        $I->seeFileFound('report.json', 'tests/data/claypit/tests/_output');
         $I->seeInThisFile('"suite":');
         $I->seeInThisFile('"dummy"');
-        $I->assertNotNull(json_decode(file_get_contents('tests/_output/report.json')));
+        $I->assertNotNull(json_decode(file_get_contents('tests/data/claypit/tests/_output/report.json')));
     }
 
     /**
@@ -94,8 +90,8 @@ class RunCest
     public function runTapReport(\CliGuy $I)
     {
         $I->wantTo('check tap reports');
-        $I->executeCommand('run dummy --tap');
-        $I->seeFileFound('report.tap.log', 'tests/_output');
+        $I->executeCommand('run -c tests/data/claypit/ dummy --tap');
+        $I->seeFileFound('report.tap.log', 'tests/data/claypit/tests/_output');
     }
 
     /**
@@ -106,8 +102,8 @@ class RunCest
     public function runXmlReport(\CliGuy $I)
     {
         $I->wantTo('check xml reports');
-        $I->executeCommand('run dummy --xml');
-        $I->seeFileFound('report.xml', 'tests/_output');
+        $I->executeCommand('run -c tests/data/claypit/ dummy --xml');
+        $I->seeFileFound('report.xml', 'tests/data/claypit/tests/_output');
         $I->seeInThisFile('<?xml');
         $I->seeInThisFile('<testsuite name="dummy"');
         $I->seeInThisFile('<testcase name="FileExists"');
@@ -121,8 +117,8 @@ class RunCest
     public function runXmlReportsInStrictMode(\CliGuy $I)
     {
         $I->wantTo('check xml in strict mode');
-        $I->executeCommand('run dummy --xml -c codeception_strict_xml.yml');
-        $I->seeFileFound('report.xml', 'tests/_output');
+        $I->executeCommand('run -c tests/data/claypit/codeception_strict_xml.yml dummy --xml');
+        $I->seeFileFound('report.xml', 'tests/data/claypit/tests/_output');
         $I->seeInThisFile('<?xml');
         $I->seeInThisFile('<testsuite name="dummy"');
         $I->seeInThisFile('<testcase name="FileExists"');
@@ -131,15 +127,14 @@ class RunCest
 
     /**
      * @group reports
-     *
      * @param CliGuy $I
      */
     public function runPhpUnitXmlReport(\CliGuy $I)
     {
         $I->wantTo('check phpunit xml reports');
-        $I->executeCommand('run dummy --phpunit-xml');
+        $I->executeCommand('run -c tests/data/claypit/ dummy --phpunit-xml');
         $I->seeInShellOutput('PHPUNIT-XML report generated in');
-        $I->seeFileFound('phpunit-report.xml', 'tests/_output');
+        $I->seeFileFound('phpunit-report.xml', 'tests/data/claypit/tests/_output');
         $I->seeInThisFile('<?xml');
         if (\PHPUnit\Runner\Version::series() < 6) {
             $I->seeInThisFile('<testsuite name="dummy" tests="6" assertions="3" failures="0" errors="0" time=');
@@ -165,10 +160,9 @@ class RunCest
      */
     public function runPhpUnitXmlReportsInStrictMode(\CliGuy $I)
     {
-        $I->wantTo('check phpunit xml in strict mode');
-        $I->executeCommand('run dummy --phpunit-xml -c codeception_strict_xml.yml');
+        $I->executeCommand('run -c tests/data/claypit/codeception_strict_xml.yml dummy --phpunit-xml');
         $I->seeInShellOutput('PHPUNIT-XML report generated in');
-        $I->seeFileFound('phpunit-report.xml', 'tests/_output');
+        $I->seeFileFound('phpunit-report.xml', 'tests/data/claypit/tests/_output');
         $I->seeInThisFile('<?xml');
         if (\PHPUnit\Runner\Version::series() < 6) {
             $I->seeInThisFile('<testsuite name="dummy" tests="6" assertions="3" failures="0" errors="0" time=');
@@ -198,7 +192,7 @@ class RunCest
         if (\PHPUnit\Runner\Version::series() >= 7) {
             throw new \PHPUnit\Framework\SkippedTestError('Not for PHPUnit 7');
         }
-        $I->executeCommand('run dummy --report -c codeception_custom_report.yml');
+        $I->executeCommand('run -c tests/data/claypit/codeception_custom_report.yml dummy --report');
         $I->seeInShellOutput('FileExistsCept: Check config exists');
         $I->dontSeeInShellOutput('Ok');
     }
@@ -210,12 +204,13 @@ class RunCest
      */
     public function runCompactReport(\CliGuy $I)
     {
-        $I->executeCommand('run dummy --report');
+        $I->executeCommand('run -c tests/data/claypit/ dummy --report');
         $I->seeInShellOutput('FileExistsCept: Check config exists........................................Ok');
     }
 
     public function runOneGroup(\CliGuy $I)
     {
+        $I->amInPath('tests/data/cli-tests');
         $I->executeCommand('run skipped -g notorun');
         $I->seeInShellOutput('Skipped Tests (1)');
         $I->seeInShellOutput("IncompleteMeCept");
@@ -224,6 +219,7 @@ class RunCest
 
     public function skipRunOneGroup(\CliGuy $I)
     {
+        $I->amInPath('tests/data/cli-tests');
         $I->executeCommand('run skipped --skip-group notorun');
         $I->seeInShellOutput('Skipped Tests (2)');
         $I->seeInShellOutput("SkipMeCept");
@@ -232,10 +228,10 @@ class RunCest
 
     public function skipGroupOfCest(\CliGuy $I)
     {
-        $I->executeCommand('run dummy');
+        $I->executeCommand('run -c tests/data/claypit/ dummy');
         $I->seeInShellOutput('Optimistic');
         $I->seeInShellOutput('Dummy Tests (6)');
-        $I->executeCommand('run dummy --skip-group ok');
+        $I->executeCommand('run -c tests/data/claypit/ dummy --skip-group ok');
         $I->seeInShellOutput('Pessimistic');
         $I->seeInShellOutput('Dummy Tests (5)');
         $I->dontSeeInShellOutput('Optimistic');
@@ -243,19 +239,20 @@ class RunCest
 
     public function runTwoSuites(\CliGuy $I)
     {
-        $I->executeCommand('run skipped,dummy --no-exit');
+        $I->amInPath('tests/data/cli-tests');
+        $I->executeCommand('run skipped,math --no-exit');
         $I->seeInShellOutput("Skipped Tests (3)");
-        $I->seeInShellOutput("Dummy Tests (6)");
+        $I->seeInShellOutput("Math Tests (6)");
         $I->dontSeeInShellOutput("Remote Tests");
     }
 
     public function skipSuites(\CliGuy $I)
     {
         $I->executeCommand(
-            'run dummy --skip skipped --skip remote --skip remote_server --skip order --skip unit '
-            . '--skip powers --skip math --skip messages'
+            ' run -c tests/data/cli-tests/ skipped --skip remote --skip remote_server'
+            . ' --skip order --skip unit  --skip powers --skip math --skip messages'
         );
-        $I->seeInShellOutput("Dummy Tests");
+        $I->seeInShellOutput("Skipped Tests");
         $I->dontSeeInShellOutput("Remote Tests");
         $I->dontSeeInShellOutput("Remote_server Tests");
         $I->dontSeeInShellOutput("Order Tests");
@@ -263,6 +260,7 @@ class RunCest
 
     public function runOneTestFromUnit(\CliGuy $I)
     {
+        $I->amInPath('tests/data/claypit');
         $I->executeCommand('run tests/dummy/AnotherTest.php:testFirst');
         $I->seeInShellOutput("AnotherTest: First");
         $I->seeInShellOutput('OK');
@@ -271,6 +269,7 @@ class RunCest
 
     public function runOneTestFromCest(\CliGuy $I)
     {
+        $I->amInPath('tests/data/claypit');
         $I->executeCommand('run tests/dummy/AnotherCest.php:optimistic');
         $I->seeInShellOutput("Optimistic");
         $I->dontSeeInShellOutput('Pessimistic');
@@ -278,6 +277,7 @@ class RunCest
 
     public function runTestWithDataProviders(\CliGuy $I)
     {
+        $I->amInPath('tests/data/cli-tests');
         $I->executeCommand('run tests/unit/DataProvidersTest.php');
         $I->seeInShellOutput('Is triangle | "real triangle"');
         $I->seeInShellOutput('Is triangle | #0');
@@ -288,6 +288,7 @@ class RunCest
 
     public function runOneGroupWithDataProviders(\CliGuy $I)
     {
+        $I->amInPath('tests/data/cli-tests');
         $I->executeCommand('run unit -g data-providers');
         $I->seeInShellOutput('Is triangle | "real triangle"');
         $I->seeInShellOutput('Is triangle | #0');
@@ -298,6 +299,7 @@ class RunCest
 
     public function runTestWithFailFast(\CliGuy $I)
     {
+        $I->amInPath('tests/data/cli-tests');
         $I->executeCommand('run unit --skip-group error --no-exit');
         $I->seeInShellOutput('FailingTest: Me');
         $I->seeInShellOutput("PassingTest: Me");
@@ -308,18 +310,19 @@ class RunCest
 
     public function runWithCustomOutputPath(\CliGuy $I)
     {
-        $I->executeCommand('run dummy --xml myverycustom.xml --html myownhtmlreport.html');
-        $I->seeFileFound('myverycustom.xml', 'tests/_output');
+        $I->executeCommand('run -c tests/data/claypit/ dummy --xml myverycustom.xml --html myownhtmlreport.html');
+        $I->seeFileFound('myverycustom.xml', 'tests/data/claypit/tests/_output');
         $I->seeInThisFile('<?xml');
         $I->seeInThisFile('<testsuite name="dummy"');
         $I->seeInThisFile('<testcase name="FileExists"');
-        $I->seeFileFound('myownhtmlreport.html', 'tests/_output');
-        $I->dontSeeFileFound('report.xml', 'tests/_output');
-        $I->dontSeeFileFound('report.html', 'tests/_output');
+        $I->seeFileFound('myownhtmlreport.html', 'tests/data/claypit/tests/_output');
+        $I->dontSeeFileFound('report.xml', 'tests/data/claypit/tests/_output');
+        $I->dontSeeFileFound('report.html', 'tests/data/claypit/tests/_output');
     }
 
     public function runTestsWithDependencyInjections(\CliGuy $I)
     {
+        $I->amInPath('tests/data/cli-tests');
         $I->executeCommand('run math');
         $I->seeInShellOutput('MathCest: Test addition');
         $I->seeInShellOutput('MathCest: Test subtraction');
@@ -332,6 +335,7 @@ class RunCest
 
     public function runErrorTest(\CliGuy $I)
     {
+        $I->amInPath('tests/data/cli-tests');
         $I->executeCommand('run unit ErrorTest --no-exit');
         $I->seeInShellOutput('There was 1 error');
         $I->seeInShellOutput('Array to string conversion');
@@ -340,6 +344,7 @@ class RunCest
 
     public function runTestWithException(\CliGuy $I)
     {
+        $I->amInPath('tests/data/cli-tests');
         $I->executeCommand('run unit ExceptionTest --no-exit -v');
         $I->seeInShellOutput('There was 1 error');
         $I->seeInShellOutput('Helllo!');
@@ -350,7 +355,7 @@ class RunCest
 
     public function runTestsWithSteps(\CliGuy $I)
     {
-        $I->executeCommand('run scenario SuccessCept --steps');
+        $I->executeCommand('run -c tests/data/claypit/ scenario SuccessCept --steps');
         $I->seeInShellOutput(<<<EOF
 Scenario --
  I am in path "."
@@ -368,7 +373,7 @@ EOF
         if (!extension_loaded('xdebug')) {
             $scenario->skip("Xdebug not loaded");
         }
-        $I->executeCommand('run scenario FailedCept --steps --no-exit');
+        $I->executeCommand('run -c tests/data/claypit/ scenario FailedCept --steps --no-exit');
         $I->seeInShellOutput(<<<EOF
 FailedCept: Fail when file is not found
 Signature: FailedCept
@@ -400,7 +405,7 @@ EOF
         }
 
         $file = "codeception" . DIRECTORY_SEPARATOR . "c3";
-        $I->executeCommand('run scenario SubStepsCept --steps');
+        $I->executeCommand('run -c tests/data/claypit/ scenario SubStepsCept --steps');
         $I->seeInShellOutput(<<<EOF
 Scenario --
  I am in path "."
@@ -414,12 +419,13 @@ EOF
 
     public function runDependentCest(CliGuy $I)
     {
-        $I->executeCommand('run order DependentCest --no-exit');
+        $I->executeCommand('run -c tests/data/cli-tests/ order DependentCest --no-exit');
         $I->seeInShellOutput('Skipped: 1');
     }
 
     public function runDependentTest(CliGuy $I)
     {
+        $I->amInPath('tests/data/cli-tests');
         $I->executeCommand('run unit DependsTest --no-exit');
         $I->seeInShellOutput('Skipped: 1');
         $I->executeCommand('run unit --no-exit');
@@ -433,7 +439,7 @@ EOF
 
     public function runGherkinTest(CliGuy $I)
     {
-        $I->executeCommand('run scenario File.feature --steps');
+        $I->executeCommand('run -c tests/data/claypit/ scenario File.feature --steps');
         $I->seeInShellOutput(<<<EOF
  In order to test a feature
  As a user
@@ -454,21 +460,21 @@ EOF
 
     public function reportsCorrectFailedStep(CliGuy $I)
     {
-        $I->executeCommand('run scenario File.feature -v');
+        $I->executeCommand('run -c tests/data/claypit/ scenario File.feature -v');
         $I->seeInShellOutput('OK, but incomplete');
         $I->seeInShellOutput('Step definition for `I have only idea of what\'s going on here` not found in contexts');
     }
 
     public function runFailingGherkinTest(CliGuy $I)
     {
-        $I->executeCommand('run scenario Fail.feature -v --no-exit');
+        $I->executeCommand('run -c tests/data/claypit/ scenario Fail.feature -v --no-exit');
         $I->seeInShellOutput('Step  I see file "games.zip"');
         $I->seeInShellOutput('Step  I see file "tools.zip"');
     }
 
     public function runGherkinScenarioWithMultipleStepDefinitions(CliGuy $I)
     {
-        $I->executeCommand('run scenario "File.feature:Check file once more" --steps');
+        $I->executeCommand('run -c tests/data/claypit/ scenario "File.feature:Check file once more" --steps');
         $I->seeInShellOutput('When there is a file "scenario.suite.yml"');
         $I->seeInShellOutput('Then i see file "scenario.suite.yml"');
         $I->dontSeeInShellOutput('Step definition for `I see file "scenario.suite.yml"` not found in contexts');
@@ -477,7 +483,7 @@ EOF
 
     public function runGherkinScenarioOutline(CliGuy $I)
     {
-        $I->executeCommand('run scenario FileExamples.feature -v');
+        $I->executeCommand('run -c tests/data/claypit/ scenario FileExamples.feature -v');
         $I->seeInShellOutput('OK (3 tests');
     }
 
@@ -488,7 +494,7 @@ EOF
      */
     public function runTestWithAnnotationExamples(CliGuy $I)
     {
-        $I->executeCommand('run scenario ExamplesCest:filesExistsAnnotation --steps');
+        $I->executeCommand('run -c tests/data/claypit/ scenario ExamplesCest:filesExistsAnnotation --steps');
     }
 
     /**
@@ -497,7 +503,7 @@ EOF
      */
     public function runTestWithJsonExamples(CliGuy $I)
     {
-        $I->executeCommand('run scenario ExamplesCest:filesExistsByJson --steps');
+        $I->executeCommand('run -c tests/data/claypit/ scenario ExamplesCest:filesExistsByJson --steps');
     }
 
     /**
@@ -506,7 +512,7 @@ EOF
      */
     public function runTestWithArrayExamples(CliGuy $I)
     {
-        $I->executeCommand('run scenario ExamplesCest:filesExistsByArray --steps');
+        $I->executeCommand('run -c tests/data/claypit/ scenario ExamplesCest:filesExistsByArray --steps');
     }
 
     protected function checkExampleFiles(CliGuy $I)
@@ -514,17 +520,17 @@ EOF
         $I->seeInShellOutput('OK (3 tests');
         $I->seeInShellOutput('I see file found "scenario.suite.yml"');
         $I->seeInShellOutput('I see file found "dummy.suite.yml"');
-        $I->seeInShellOutput('I see file found "unit.suite.yml"');
+        $I->seeInShellOutput('I see file found "remote.suite.yml"');
     }
 
     public function runTestWithComplexExample(CliGuy $I)
     {
-        $I->executeCommand('run scenario ExamplesCest:filesExistsComplexJson --debug');
+        $I->executeCommand('run -c tests/data/claypit/ scenario ExamplesCest:filesExistsComplexJson --debug');
         $I->seeInShellOutput('Files exists complex json | {"path":"."');
         $I->seeInShellOutput('OK (1 test');
         $I->seeInShellOutput('I see file found "scenario.suite.yml"');
         $I->seeInShellOutput('I see file found "dummy.suite.yml"');
-        $I->seeInShellOutput('I see file found "unit.suite.yml"');
+        $I->seeInShellOutput('I see file found "remote.suite.yml"');
     }
 
     public function overrideConfigOptionsToChangeReporter(CliGuy $I)
@@ -532,29 +538,29 @@ EOF
         if (!class_exists('PHPUnit_Util_Log_TeamCity')) {
             throw new \PHPUnit\Framework\SkippedTestError('Reporter does not exist for this PHPUnit version');
         }
-        $I->executeCommand('run scenario --report -o "reporters: report: PHPUnit_Util_Log_TeamCity" --no-exit');
+        $I->executeCommand('run -c tests/data/claypit/ scenario --report -o "reporters: report: PHPUnit_Util_Log_TeamCity" --no-exit');
         $I->seeInShellOutput('##teamcity[testStarted');
         $I->dontSeeInShellOutput('............Ok');
     }
 
     public function overrideModuleOptions(CliGuy $I)
     {
-        $I->executeCommand('run powers PowerIsRisingCept --no-exit');
+        $I->executeCommand('run -c tests/data/cli-tests/ powers PowerIsRisingCept --no-exit');
         $I->seeInShellOutput('FAILURES');
-        $I->executeCommand('run powers PowerIsRisingCept -o "modules: config: PowerHelper: has_power: true" --no-exit');
+        $I->executeCommand('run -c tests/data/cli-tests/ powers PowerIsRisingCept -o "modules: config: PowerHelper: has_power: true" --no-exit');
         $I->dontSeeInShellOutput('FAILURES');
     }
 
 
     public function runTestWithAnnotationExamplesFromGroupFileTest(CliGuy $I)
     {
-        $I->executeCommand('run scenario -g groupFileTest1 --steps');
+        $I->executeCommand('run -c tests/data/claypit/ scenario -g groupFileTest1 --steps');
         $I->seeInShellOutput('OK (3 tests');
     }
 
     public function testsWithConditionalFails(CliGuy $I)
     {
-        $I->executeCommand('run scenario ConditionalCept --no-exit');
+        $I->executeCommand('run -c tests/data/claypit/ scenario ConditionalCept --no-exit');
         $I->seeInShellOutput('There were 3 failures');
         $I->seeInShellOutput('Fail  File "not-a-file" not found');
         $I->seeInShellOutput('Fail  File "not-a-dir" not found');
@@ -563,13 +569,13 @@ EOF
 
     public function runTestWithAnnotationDataprovider(CliGuy $I)
     {
-        $I->executeCommand('run scenario -g dataprovider --steps');
+        $I->executeCommand('run -c tests/data/claypit/ scenario -g dataprovider --steps');
         $I->seeInShellOutput('OK (18 tests');
     }
 
     public function runFailedTestAndCheckOutput(CliGuy $I)
     {
-        $I->executeCommand('run scenario FailedCept', false);
+        $I->executeCommand('run -c tests/data/claypit/ scenario FailedCept', false);
         $testPath = implode(DIRECTORY_SEPARATOR, ['tests', 'scenario', 'FailedCept.php']);
         $I->seeInShellOutput('1) FailedCept: Fail when file is not found');
         $I->seeInShellOutput('Test  ' . $testPath);
@@ -579,13 +585,13 @@ EOF
 
     public function runTestWithCustomSetupMethod(CliGuy $I)
     {
-        $I->executeCommand('run powers PowerUpCest');
+        $I->executeCommand('run -c tests/data/cli-tests/ powers PowerUpCest');
         $I->dontSeeInShellOutput('FAILURES');
     }
 
     public function runCestWithTwoFailedTest(CliGuy $I)
     {
-        $I->executeCommand('run scenario PartialFailedCest', false);
+        $I->executeCommand('run -c tests/data/claypit/ scenario PartialFailedCest', false);
         $I->seeInShellOutput('See file found "testcasetwo.txt"');
         $I->seeInShellOutput('See file found "testcasethree.txt"');
         $I->seeInShellOutput('Tests: 3,');
@@ -597,6 +603,7 @@ EOF
         if (version_compare(\PHPUnit\Runner\Version::id(), '9.5.0', '>=')) {
             $scenario->skip('This warning is an error since PHPUnit 9.5');
         }
+        $I->amInPath('tests/data/cli-tests');
         $I->executeCommand('run unit WarningTest.php', false);
         $I->seeInShellOutput('There was 1 warning');
         $I->seeInShellOutput('WarningTest::testWarningInvalidDataProvider');
@@ -610,6 +617,7 @@ EOF
      */
     public function showSeedNumberOnShuffle(CliGuy $I)
     {
+        $I->amInPath('tests/data/cli-tests');
         $I->executeCommand('run unit -o "settings: shuffle: true"', false);
         $I->seeInShellOutput('Seed');
         $I->executeCommand('run unit', false);
@@ -626,6 +634,7 @@ EOF
         if (DIRECTORY_SEPARATOR === '\\') {
             $s->skip('Failing on Windows. Need to investigate');
         }
+        $I->amInPath('tests/data/cli-tests');
         $I->executeCommand('run unit -o "settings: shuffle: true"', false);
         $I->seeInShellOutput('Seed');
         $output = $I->grabFromOutput('/---\n((.|\n)*?)---/m');
@@ -643,11 +652,11 @@ EOF
         $newOutput = preg_replace('~\(\d\.\d+s\)~m', '', $newOutput);
 
         $I->assertNotEquals($output, $newOutput, 'order of tests is the same');
-        }
+    }
 
     public function runCustomBootstrap(\CliGuy $I)
     {
-        $I->wantTo('execute one test');
+        $I->amInPath('tests/data/claypit');
         $I->executeCommand('run dummy --bootstrap tests/_init.php');
         $I->seeInShellOutput('--INIT--');
         $I->seeInShellOutput("'hello' => 'world'");
@@ -656,7 +665,7 @@ EOF
 
     public function throwErrorIfBootstrapNotFound(\CliGuy $I)
     {
-        $I->wantTo('execute one test');
+        $I->amInPath('tests/data/claypit');
         $I->executeCommand('run dummy --bootstrap tests/init.php --no-exit 2>&1', false);
         $I->dontSeeInShellOutput('--INIT--');
         $I->seeInShellOutput("can't be loaded");
@@ -666,7 +675,7 @@ EOF
 
     public function runBootstrapInGlobalConfig(\CliGuy $I)
     {
-        $I->wantTo('execute one test');
+        $I->amInPath('tests/data/claypit');
         $I->executeCommand('run dummy -c codeception.bootstrap.yml');
         $I->seeInShellOutput('--INIT--');
         $I->seeInShellOutput("'hello' => 'world'");
@@ -675,7 +684,7 @@ EOF
 
     public function runBootstrapInSuiteConfig(\CliGuy $I)
     {
-        $I->wantTo('execute one test');
+        $I->amInPath('tests/data/claypit');
         $I->executeCommand('run dummy.bootstrap');
         $I->seeInShellOutput('--INIT--');
         $I->seeInShellOutput("'hello' => 'world'");
@@ -690,15 +699,13 @@ EOF
     public function runHtmlWithPhpBrowserCheckReport(\CliGuy $I)
     {
         $I->wantTo('execute tests with PhpBrowser with html output and check html');
-        $I->executeFailCommand('run phpbrowser_html_report --html');
+        $I->executeFailCommand('run -c tests/data/cli-tests/ phpbrowser_html_report --html');
         $I->seeResultCodeIsNot(0);
-        $expectedRelReportPath     = 'tests/_output';
+        $expectedRelReportPath     = 'tests/data/cli-tests/tests/_output/';
         $expectedReportFilename    = 'CodeceptionIssue5568Cest.failureShouldCreateHtmlSnapshot.fail.html';
-        $expectedReportAbsFilename = join(DIRECTORY_SEPARATOR, array(
-            getcwd(),
-            $expectedRelReportPath,
-            $expectedReportFilename
-        ));
+        $expectedReportAbsFilename = codecept_root_dir() .
+            str_replace('/', DIRECTORY_SEPARATOR, $expectedRelReportPath) .
+            $expectedReportFilename;
         $I->seeInShellOutput('Html: ' . $expectedReportAbsFilename);
         $I->seeInShellOutput('Response: ' . $expectedReportAbsFilename);
         $I->seeFileFound('report.html', $expectedRelReportPath);
@@ -851,8 +858,8 @@ EOF
 
     $test = $testClass . ':' . $testCase;
     $I->wantTo('verify that all steps are rendered correctly in HTML report (' . $test . ')');
-    $I->executeCommand('run html_report ' . $test . '$ --html');
-    $I->seeFileFound('report.html', 'tests/_output');
+    $I->executeCommand('run -c tests/data/cli-tests/ html_report ' . $test . '$ --html');
+    $I->seeFileFound('report.html', 'tests/data/cli-tests/tests/_output/');
 
     // Check HTML report in sufficient detail:
     $builder = (new HtmlReportRegexBuilder())->addTest($testBuilder);

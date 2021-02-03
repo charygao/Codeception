@@ -69,17 +69,21 @@ class SnapshotCest
         $I->seeInShellOutput('Snapshot doesn\'t match real data');
     }
 
+    /**
+     * @group sandbox
+     */
     public function generateGlobalSnapshot(CliGuy\GeneratorSteps $I)
     {
-        $I->amInPath('tests/data/sandbox');
         $I->executeCommand('generate:snapshot Login');
         $I->seeFileWithGeneratedClass('Login', 'tests/_support/Snapshot');
         $I->dontSeeInThisFile('public function __construct(\DumbGuy $I)');
     }
 
+    /**
+     * @group sandbox
+     */
     public function generateSuiteSnapshot(CliGuy\GeneratorSteps $I)
     {
-        $I->amInPath('tests/data/sandbox');
         $I->executeCommand('generate:snapshot dummy Login');
         $I->seeFileWithGeneratedClass('Login', 'tests/_support/Snapshot/Dummy');
         $I->seeInThisFile('namespace Snapshot\\Dummy;');
@@ -88,8 +92,12 @@ class SnapshotCest
         $I->seeInThisFile('public function __construct(\DumbGuy $I)');
     }
 
+    /**
+     * @group sandbox
+     */
     public function generateGlobalSnapshotInDifferentPath(CliGuy\GeneratorSteps $I)
     {
+        $I->amInPath(codecept_root_dir());
         $I->executeCommand('generate:snapshot Login -c tests/data/sandbox');
         $I->amInPath('tests/data/sandbox');
         $I->seeFileWithGeneratedClass('Login', 'tests/_support/Snapshot');

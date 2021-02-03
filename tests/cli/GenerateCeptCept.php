@@ -1,7 +1,10 @@
 <?php
+/**
+ * @group sandbox
+ */
+
 $I = new CliGuy($scenario);
 $I->wantTo('generate sample Cept');
-$I->amInPath('tests/data/sandbox');
 $I->executeCommand('generate:cept dummy DummyCept');
 $I->seeFileFound('DummyCept.php', 'tests/dummy');
 $I->seeInThisFile('$I = new DumbGuy($scenario);');

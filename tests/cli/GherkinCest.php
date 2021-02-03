@@ -6,7 +6,12 @@ class GherkinCest
 {
     public function _before(CliGuy $I)
     {
-        $I->amInPath('tests/data/sandbox');
+        $I->amInPath('tests/data/claypit');
+    }
+
+    public function _after(CliGuy $I)
+    {
+        $I->amInPath(codecept_root_dir());
     }
 
     public function steps(CliGuy $I)

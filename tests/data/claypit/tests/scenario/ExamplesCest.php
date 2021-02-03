@@ -6,7 +6,7 @@ class ExamplesCest
     /**
      * @example(path=".", file="scenario.suite.yml")
      * @example(path=".", file="dummy.suite.yml")
-     * @example(path=".", file="unit.suite.yml")
+     * @example(path=".", file="remote.suite.yml")
      */
     public function filesExistsAnnotation(ScenarioGuy $I, Example $example)
     {
@@ -18,7 +18,7 @@ class ExamplesCest
     /**
      * @example { "path":".", "file":"scenario.suite.yml" }
      * @example { "path":".", "file":"dummy.suite.yml" }
-     * @example { "path":".", "file":"unit.suite.yml" }
+     * @example { "path":".", "file":"remote.suite.yml" }
      */
     public function filesExistsByJson(ScenarioGuy $I, Example $example)
     {
@@ -29,7 +29,7 @@ class ExamplesCest
     /**
      * @example [".", "scenario.suite.yml"]
      * @example [".", "dummy.suite.yml"]
-     * @example [".", "unit.suite.yml"]
+     * @example [".", "remote.suite.yml"]
      */
     public function filesExistsByArray(ScenarioGuy $I, Example $example)
     {
@@ -38,7 +38,7 @@ class ExamplesCest
     }
 
     /**
-     * @example [{"path":".", "file":"scenario.suite.yml"}, {"path":".", "file":"dummy.suite.yml"}, {"path":".", "file":"unit.suite.yml"}]
+     * @example [{"path":".", "file":"scenario.suite.yml"}, {"path":".", "file":"dummy.suite.yml"}, {"path":".", "file":"remote.suite.yml"}]
      */
     public function filesExistsComplexJson(ScenarioGuy $I, Example $examples)
     {

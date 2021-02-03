@@ -10,6 +10,6 @@ Feature: Suite configs
 
     Examples:
       | directory | filename            |
-      | .         | unit.suite.yml      |
+      | .         | remote.suite.yml      |
       | .         | scenario.suite.yml  |
       | .         | dummy.suite.yml     |
